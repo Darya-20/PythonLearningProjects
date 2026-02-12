@@ -1,0 +1,101 @@
+>>> user1 = User.objects.create_user('Ivan_Ivanov')
+>>> user2 = User.objects.create_user('Petr_Petrov')
+
+>>> author1 = Author.objects.create(user=user1, rating=0)
+>>> author2 = Author.objects.create(user=user2, rating=0)
+
+>>> category1 = Category.objects.create(name='Экономика')
+>>> category2 = Category.objects.create(name='Технологии')
+>>> category3 = Category.objects.create(name='Наука')
+>>> category4 = Category.objects.create(name='Культура')
+
+>>> article1 = Post.objects.create(
+... author=author1,
+... type=Post.article,
+... title='ИИ агенты в бизнесе',
+... text='''Сегодня всё чаще говорят об ИИ агентах — программных помощниках, способных самостоятельно выполнять рабочие задачи: анализировать данные, принимать решения, вести переговоры или обрабатывать заявки.
+... На первый взгляд, это идеальный инструмент для автоматизации рутины и ускорения бизнес процессов. Однако на практике внедрение таких агентов сталкивается с серьёзными сложностями. Компании вынуждены перестраивать привычные процессы, искать редких специалистов для настройки ИИ и преодолевать скепсис сотрудников, не готовых доверять машине важные решения.
+... В результате ИИ агенты оказываются не волшебной палочкой, а инструментом, требующим взвешенного подхода. Успех зависит от готовности бизнеса меняться и наличия экспертизы для грамотной интеграции ИИ в рабочие процессы.'''
+... )
+>>> article2 = Post.objects.create(
+... author=author2,
+... type=Post.article,
+... title='Технологии в кино',
+... text='''Современные технологии серьёзно изменили кинопроизводство. Цифровые камеры и форматы 4K и 3D позволяют добиваться невероятной чёткости и объёма изображения, а визуальные эффекты помогают создавать фантастические миры прямо в студии.
+... В постпродакшене искусственный интеллект ускоряет монтаж, цветокоррекцию и даже генерацию музыки, а технологии захвата движения и мимики позволяют создавать реалистичных цифровых персонажей. Благодаря облачным сервисам команды из разных стран могут совместно работать над фильмом онлайн.
+... Таким образом, технологии не заменяют творцов, а дают им новые инструменты для воплощения идей — ярче, быстрее и с меньшими затратами.'''
+... )
+>>> news1 = Post.objects.create(
+... author=author1,
+... type=Post.news,
+... title='Энергоэффективный ИИ',
+... text='Учёные и инженеры ищут способы снизить энергопотребление моделей и инфраструктуры при сохранении производительности. Применяются облегчённые нейросетевые архитектуры и локальная обработка данных без передачи в дата-центры.'
+... )
+
+>>> article1.categories.add(category1, category2)
+>>> article2.categories.add(category2, category4)
+>>> news1.categories.add(category2, category3)
+
+>>> comment1 = Comment.objects.create(
+... post=article1,
+... user=user1,
+... text='Совершенно с вами согласен'
+... )
+>>> comment2 = Comment.objects.create(
+... post=article1,
+... user=user2,
+... text='Спорное мнение'
+... )
+>>> comment3 = Comment.objects.create(
+... post=article2,
+... user=user2,
+... text='Очень интересно, спасибо!'
+... )
+>>> comment4 = Comment.objects.create(
+... post=news1,
+... user=user2,
+... text='Замечательная новость'
+
+>>> article1.like()
+>>> article1.like()
+>>> article1.like()
+>>> article1.like()
+>>> article1.like()
+>>> article1.dislike()
+>>> comment1.like()
+>>> comment1.like()
+>>> comment1.like()
+>>> comment2.dislike()
+>>> comment2.dislike()
+
+>>> article2.like()
+>>> article2.like()
+>>> article2.like()
+>>> article2.like()
+>>> article2.like()
+>>> comment3.like()
+>>> comment3.like()
+
+>>> news1.like()
+>>> comment4.like()
+
+>>> author1.update_rating()
+>>> author2.update_rating()
+
+>>> best_author = Author.objects.order_by('-rating').first()
+>>> print(best_author.user.username, best_author.rating)    
+Ivan_Ivanov 20
+
+>>> best_post = Post.objects.order_by('-rating').first()
+>>> print(
+... f"""Дата: {best_post.datetime_creation}
+... Автор: {best_post.author.user.username}
+... Рейтинг: {best_post.rating}
+... Заголовок: {best_post.title}
+... Превью: {best_post.preview()}"""
+... )
+Дата: 2026-02-12 13:16:24.377300+00:00
+Автор: Petr_Petrov
+Рейтинг: 5
+Заголовок: Технологии в кино
+Превью: Современные технологии серьёзно изменили кинопроизводство. Цифровые камеры и форматы 4K и 3D позволяют добиваться невероятно...
