@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Sum
@@ -15,10 +17,15 @@ class Author(models.Model):
         self.rating = rating_posts * 3 + rating_comments + rating_comments_posts
         self.save()
         
+    def __str__(self):
+        return f"{self.user.username} - {self.rating}"
 
 class Category(models.Model):
     """Категории новостей/статей."""
     name = models.CharField(max_length=50, unique=True)
+
+    def __str__(self):
+        return self.name
 
 
 class Post(models.Model):
@@ -37,6 +44,14 @@ class Post(models.Model):
     title = models.CharField(max_length=100) #заголовок статьи/новости
     text = models.TextField() #текст статьи/новости
     rating = models.IntegerField(default=0) #рейтинг статьи/новости
+
+    def __str__(self):
+        categories_names = [category.name for category in self.categories.all()]
+        return f"""{self.datetime_creation.strftime('%d.%m.%y %H:%M')} {self.get_type_display()}
+{', '.join(categories_names)}
+{self.title}
+{self.author}
+{self.preview()}"""
 
     def preview(self):
         return self.text[:124] + '...'
@@ -72,3 +87,7 @@ class Comment(models.Model):
         self.rating -= 1
         self.save()
     
+    def __str__(self):
+        return f'''{self.post.title} {self.datetime_creation}
+{self.user.username}
+{self.text}'''
