@@ -1,0 +1,27 @@
+{% extends 'flatpages/default.html' %} 
+
+{% load custom_filters %}
+ 
+{% block title %}
+Posts
+{% endblock title %}
+ 
+{% block content %}
+    <h1><span style="color: #008080;"><i> Все публикации ({{ posts|length }})</i></span></h1>
+    {% if posts %}
+        <div align="left">
+        <ol>
+        {% for post in posts %}
+            <li>
+                {{ post.title|censor }}
+                {{ post.datetime_creation|date:'d.M.Y' }}
+                <br>
+                {{ post.text|censor|truncatewords:20 }}
+            </li>
+        {% endfor %}
+        </ol>
+        </div>
+    {% else %}
+        <h2>Новостей нет!</h2>
+    {% endif %}
+{% endblock content %}
