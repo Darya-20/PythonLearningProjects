@@ -1,0 +1,13 @@
+{% extends 'posts.html' %}
+
+{% block content_search %}
+    <h1><span style="color: #008080;"><i> Поиск публикаций ({{ posts|length }})</i></span></h1>
+
+    <form action="" method="get">
+        {{ filterset.form.as_p }}
+        <input type="submit" value="Найти" />
+    </form>
+
+
+{% endblock content_search %}
+

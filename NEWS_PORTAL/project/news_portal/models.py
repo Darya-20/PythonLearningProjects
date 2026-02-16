@@ -1,4 +1,5 @@
-from datetime import datetime
+#from datetime import datetime
+from django.urls import reverse
 
 from django.db import models
 from django.contrib.auth.models import User
@@ -46,12 +47,18 @@ class Post(models.Model):
     rating = models.IntegerField(default=0) #рейтинг статьи/новости
 
     def __str__(self):
-        categories_names = [category.name for category in self.categories.all()]
+        
         return f"""{self.datetime_creation.strftime('%d.%m.%y %H:%M')} {self.get_type_display()}
-{', '.join(categories_names)}
+{self.categories_post()}
 {self.title}
 {self.author}
 {self.preview()}"""
+    
+    def categories_post(self):
+        return ', '.join([category.name for category in self.categories.all()])
+
+    def get_absolute_url(self):
+        return reverse('post_detail', args=[str(self.id)])
 
     def preview(self):
         return self.text[:124] + '...'

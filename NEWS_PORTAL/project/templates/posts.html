@@ -1,20 +1,29 @@
 {% extends 'flatpages/default.html' %} 
 
 {% load custom_filters %}
+{% load custom_tags %}
  
 {% block title %}
 Posts
 {% endblock title %}
  
-{% block content %}
-    <h1><span style="color: #008080;"><i> Все публикации ({{ posts|length }})</i></span></h1>
+{% block content %}    
+    {% block content_search %}
+        <h1><span style="color: #008080;"><i> Все публикации ({{ posts|length }})</i></span></h1>
+    
+        <a href="/news/search">
+            <button type="button">Поиск публикаций</button>
+        </a>
+    {% endblock content_search %}
+    
     {% if posts %}
         <div align="left">
         <ol>
         {% for post in posts %}
             <li>
-                {{ post.title|censor }}
+                <a href="{{ post.get_absolute_url }}"> {{ post.title|censor }} </a>
                 {{ post.datetime_creation|date:'d.M.Y' }}
+                {{ post.categories_list }}
                 <br>
                 {{ post.text|censor|truncatewords:20 }}
             </li>
@@ -24,4 +33,23 @@ Posts
     {% else %}
         <h2>Новостей нет!</h2>
     {% endif %}
+        
+    {% if page_obj.has_previous %}
+        <a href="?{% url_replace page=1 %}">1</a>
+        {% if page_obj.previous_page_number != 1 %}
+            ...
+            <a href="?{% url_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a>
+        {% endif %}
+    {% endif %}
+
+    {{ page_obj.number }}
+
+    {% if page_obj.has_next %}
+        <a href="?{% url_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a>
+        {% if paginator.num_pages != page_obj.next_page_number %}
+            ...
+            <a href="?{% url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
+        {% endif %}
+    {% endif %}
+
 {% endblock content %}
