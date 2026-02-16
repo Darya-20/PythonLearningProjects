@@ -1,0 +1,41 @@
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filters %}
+
+{% block title %}
+Post {{ post.title }}
+{% endblock title %}
+
+{% block content %}
+    <h1>{{ post.title|censor }}</h1>
+    <div align="left">
+    {{ post.author }}
+    <br>
+    {{ post.datetime_creation|date:'d.M.Y' }}
+    {{ categories }}
+    <br>
+    {{ post.text|censor }}
+    </div>
+
+
+    {% if post.type == "NE" %}
+        <a href="{% url 'news_edit' post.pk %}">
+            <button type="button">Редактировать</button>
+        </a>
+    {% else %}
+        <a href="{% url 'article_edit' post.pk %}">
+            <button type="button">Редактировать</button>
+        </a>
+    {% endif %}
+
+    {% if post.type == "NE" %}
+        <a href="{% url 'news_delete' post.pk %}">
+            <button type="button">Удалить</button>
+        </a>
+    {% else %}
+        <a href="{% url 'article_delete' post.pk %}">
+            <button type="button">Удалить</button>
+        </a>
+    {% endif %}
+
+{% endblock content %}
