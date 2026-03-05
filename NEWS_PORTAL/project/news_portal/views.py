@@ -1,4 +1,5 @@
 from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
 from .models import *
@@ -9,7 +10,7 @@ from .forms import PostForm
 class PostsList(ListView):
     model= Post
     ordering = '-datetime_creation'
-    template_name = 'posts.html'
+    template_name = 'news_portal/posts.html'
     context_object_name = 'posts'
     paginate_by = 10
 
@@ -24,7 +25,7 @@ class PostsList(ListView):
     
 
 class PostSearchList(PostsList):
-    template_name = 'posts_search.html'
+    template_name = 'news_portal/posts_search.html'
     
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -39,7 +40,7 @@ class PostSearchList(PostsList):
 
 class PostDetail(DetailView):
     model = Post
-    template_name = 'post_detail.html'
+    template_name = 'news_portal/post_detail.html'
     context_object_name = 'post'
 
     def get_context_data(self, **kwargs):
@@ -48,10 +49,11 @@ class PostDetail(DetailView):
         return context
 
 
-class PostCreate(CreateView):
+class PostCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    permission_required = ('news_portal.add_post', )
     form_class = PostForm
     model = Post
-    template_name = 'post_edit.html'
+    template_name = 'news_portal/post_edit.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -66,20 +68,22 @@ class PostCreate(CreateView):
         return super().form_valid(form)
     
 
-class PostUpdate(UpdateView):
+class PostUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    permission_required = ('news_portal.change_post', )
     form_class = PostForm
     model = Post
-    template_name = 'post_edit.html'
+    template_name = 'news_portal/post_edit.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         return create_or_update(context, self.request.path)
     
 
-class PostDelete(DeleteView):
+class PostDelete(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
+    permission_required = ('news_portal.delete_post', )
     model = Post
     context_object_name = 'post'
-    template_name = 'post_delete.html'
+    template_name = 'news_portal/post_delete.html'
     success_url = reverse_lazy('post_list')
 
 

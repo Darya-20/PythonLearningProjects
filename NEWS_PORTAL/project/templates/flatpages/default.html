@@ -39,12 +39,22 @@
                         <li class="nav-item">
                             <a class="nav-link" href="/contacts/">Contact</a>
                         </li>
+
+                        {% if user.is_authenticated %}
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'news_create' %}">Предложить новость</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'article_create' %}">Предложить статью</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'user_profile' %}">Страница пользователя</a>
+                        </li>
+                        {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'account_login' %}">Вход</a>
+                        </li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>
