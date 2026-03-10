@@ -1,0 +1,23 @@
+{% load custom_filters %}
+{% load custom_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>Еженедельная рассылка</h2>
+    <h2>Здравствуй, { user.username }. В разделе "{{ category.name }}" появились новые публикации за последнюю неделю: </h2>
+    <ul>
+        {% for post in posts %}
+        <li>
+            <h3><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h3>
+            <p>{{ post.text|censor|truncatewords:50 }}...</p>
+        
+        </li>
+    {% endfor %}
+    </ul>
+</body>
+</html>

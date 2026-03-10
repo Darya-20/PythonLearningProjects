@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    {% load account %}
+    <h2>{{ user.username }}! Вы зарегистрировались в приложении News Portal!</h2>
+    <p> Добро пожаловать на наш Новостной портал </p>
+    <p> Для завершения регистрации подтвердите свою почту </p>
+    <a href="http://127.0.0.1:8000/sign/user_profile/"> <!--{{ activate_url }}-->
+        <button type="button"> Подтвердить </button>
+    </a>
+</body>
+</html>

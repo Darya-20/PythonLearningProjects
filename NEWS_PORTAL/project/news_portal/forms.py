@@ -1,7 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 
-from .models import Post, Category
+from .models import Category, Post
 
 
 class PostForm(forms.ModelForm):
@@ -13,9 +13,8 @@ class PostForm(forms.ModelForm):
     
     class Meta:
         model = Post
-        fields = ['author', 'categories', 'title', 'text']
+        fields = ['categories', 'title', 'text']
         widgets = {
-            'author': forms.Select(attrs={'class': 'form-select'}),
             'title': forms.TextInput(attrs={
                 'class': 'form-control'
             }),
@@ -25,7 +24,6 @@ class PostForm(forms.ModelForm):
             })
         }
         labels = {
-            'author': 'Автор',
             'title': 'Заголовок',
             'text': 'Текст'
         }

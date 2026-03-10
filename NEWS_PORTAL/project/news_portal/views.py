@@ -1,10 +1,14 @@
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import (LoginRequiredMixin,
+                                        PermissionRequiredMixin)
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
+                                  UpdateView)
 
-from .models import *
 from .filters import PostFilter
 from .forms import PostForm
+from .models import *
 
 
 class PostsList(ListView):
@@ -38,6 +42,43 @@ class PostSearchList(PostsList):
         return context
 
 
+class CategoriesListView(ListView):
+    model = Category
+    ordering = ''
+    template_name = 'news_portal/categories_list.html'
+    context_object_name = 'categories'
+
+    def get_absolute_url(self):
+        return reverse('posts_category_list', kwargs={'pk': self.pk})
+
+
+@login_required
+def subsсribe(request, pk):
+    category = Category.objects.get(pk=pk)
+    category.subscribers.add(request.user)
+    return redirect(request.META.get('HTTP_REFERER'))
+
+@login_required
+def unsubsсribe(request, pk):
+    category = Category.objects.get(pk=pk)
+    category.subscribers.remove(request.user)
+    return redirect(request.META.get('HTTP_REFERER'))
+
+
+class PostsCategoriesListView(PostsList):
+    template_name = 'news_portal/posts_category_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        category = Category.objects.get(pk=self.kwargs['pk'])
+        context['category'] = category
+        return context
+    
+    def get_queryset(self):
+        self.category = Category.objects.get(pk=self.kwargs['pk'])
+        return Post.objects.filter(categories=self.category).order_by('-datetime_creation')
+
+
 class PostDetail(DetailView):
     model = Post
     template_name = 'news_portal/post_detail.html'
@@ -61,12 +102,17 @@ class PostCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
 
     def form_valid(self, form):
         post = form.save(commit=False)
+        post.author = self.request.user.author
         if 'article' in self.request.path:
-            post.type = 'article'
+            post.type = 'AR'
         else:
-            post.type = 'news'
+            post.type = 'NE'
+        
+        post.save()
+        form.save_m2m()
+        
         return super().form_valid(form)
-    
+
 
 class PostUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     permission_required = ('news_portal.change_post', )
@@ -84,7 +130,7 @@ class PostDelete(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model = Post
     context_object_name = 'post'
     template_name = 'news_portal/post_delete.html'
-    success_url = reverse_lazy('post_list')
+    success_url = reverse_lazy('posts')
 
 
 def create_or_update(context, path):

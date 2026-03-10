@@ -1,0 +1,33 @@
+{% extends 'flatpages/default.html' %} 
+
+{% block title %}
+Категории публикаций
+{% endblock title %}
+
+{% block content %}
+<h2> Категории публикаций </h2>
+    <a href="/news">
+        <button type="button">Все публикации</button>
+    </a>
+    <a href="/news/search">
+        <button type="button">Поиск публикаций</button>
+    </a>
+
+    <div align="left">
+        <ol>
+        {% for category in categories %}
+            <li>
+                <a href="{{ category.get_absolute_url }}"> {{ category.name }} </a>
+                {% if user.is_authenticated %}
+                    {% if user in category.subscribers.all %}
+                    <button> <a href="{% url 'unsubsсribe' category.id %}"> Отписаться </a> </button>
+                    {% else %}
+                    <button> <a href="{% url 'subsсribe' category.id %}"> Подписаться </a> </button>
+                    {% endif %}
+                {% endif %}
+            </li>
+        {% endfor %}
+        </ol>
+    </div>
+
+{% endblock %}

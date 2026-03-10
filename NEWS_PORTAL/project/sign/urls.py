@@ -1,7 +1,7 @@
-from django.urls import path
 from django.contrib.auth.views import LoginView, LogoutView
-from .views import BaseRegisterView, UserProfileView, upgrade_me
+from django.urls import path
 
+from .views import BaseRegisterView, UserProfileView, upgrade_me
 
 urlpatterns = [
     path('login/', LoginView.as_view(template_name = 'sign/login.html'), name='login'),

@@ -1,0 +1,18 @@
+{% extends 'news_portal/posts.html' %}
+
+{% block title %}
+Публикации в категории 
+{% endblock title %}
+
+{% block content_search %}
+    
+    <h2> Публикации в категории  {{ category.name }} </h2>
+        <a href="/news/search">
+            <button type="button">Поиск публикаций</button>
+        </a>
+        <a href="/news/categories">
+            <button type="button">Категории публикаций</button>
+        </a>
+
+
+{% endblock content_search %}

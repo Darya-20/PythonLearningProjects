@@ -1,7 +1,14 @@
-{% extends 'posts.html' %}
+{% extends 'news_portal/posts.html' %}
 
 {% block content_search %}
     <h1><span style="color: #008080;"><i> Поиск публикаций ({{ posts|length }})</i></span></h1>
+
+        <a href="/news">
+            <button type="button">Все публикации</button>
+        </a>
+        <a href="/news/categories">
+            <button type="button">Категории публикаций</button>
+        </a>
 
     <form action="" method="get">
         {{ filterset.form.as_p }}

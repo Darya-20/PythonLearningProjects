@@ -1,0 +1,15 @@
+{% load custom_filters %}
+{% load custom_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>Здравствуй, { user.username }. Новая публикация в твоём любимом разделе! {{ post.category.name }} </h2>
+    <p> {{ post.title }} </p>
+    <p> {{ post.text|censor|truncatewords:50 }}...<a href="http://127.0.0.1:8000{{ post.get_absolute_url }}">Читать далее</a> </p>
+</body>
+</html>

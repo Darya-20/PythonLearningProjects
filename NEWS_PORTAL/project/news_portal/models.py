@@ -1,9 +1,8 @@
-#from datetime import datetime
+from django.contrib.auth.models import User
+from django.db import models
+from django.db.models import Sum
 from django.urls import reverse
 
-from django.db import models
-from django.contrib.auth.models import User
-from django.db.models import Sum
 
 class Author(models.Model):
     """Модель, содержащая объекты всех авторов."""
@@ -21,12 +20,17 @@ class Author(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.rating}"
 
+
 class Category(models.Model):
     """Категории новостей/статей."""
     name = models.CharField(max_length=50, unique=True)
+    subscribers = models.ManyToManyField(User, related_name='categories')
 
     def __str__(self):
         return self.name
+    
+    def get_absolute_url(self):
+        return reverse('posts_category_list', args=[str(self.id)])
 
 
 class Post(models.Model):
