@@ -14,7 +14,7 @@ from django_apscheduler.models import DjangoJobExecution
 
 from ...models import Post
 
-logger = logging.getLogger(__name__)
+"""logger = logging.getLogger(__name__)
 
 def send_weekly_newslettert():
     week_ago = timezone.now() - timedelta(days=7)
@@ -23,7 +23,6 @@ def send_weekly_newslettert():
 
     if not new_posts.exists():
         logger.info("No new posts this week.")
-        print("Not new posts")
         return
 
     category_posts = defaultdict(list)
@@ -40,7 +39,6 @@ def send_weekly_newslettert():
                     'user': user,
                     'category': category,
                     'posts': posts,
-                    'week_ago': week_ago,
                 }
             )
 
@@ -53,30 +51,28 @@ def send_weekly_newslettert():
                 html_message=html_content,
             )
             logger.info(f"Sent weekly digest to {user.email} for category {category.name}")
-            print(f"Sent weekly digest to {user.email} for category {category.name}")
     
- 
- 
+
 def delete_old_job_executions(max_age=604_800):
     DjangoJobExecution.objects.delete_old_job_executions(max_age)
- 
- 
+
+
 class Command(BaseCommand):
     help = "Sends a weekly newsletter with new posts."
- 
+
     def handle(self, *args, **options):
         scheduler = BlockingScheduler(timezone=settings.TIME_ZONE)
         scheduler.add_jobstore(DjangoJobStore(), "default")
         
         scheduler.add_job(
             send_weekly_newslettert,
-            trigger=CronTrigger(day_of_week="mon", hour="12", minute="00"),
+            trigger=CronTrigger(day_of_week="mon", hour="08", minute="00"),
             id="send_weekly_newslettert",
             max_instances=1,
             replace_existing=True,
         )
         logger.info("Added job 'send_weekly_newslettert'.")
- 
+
         scheduler.add_job(
             delete_old_job_executions,
             trigger=CronTrigger(day_of_week="mon", hour="00", minute="00"),
@@ -84,9 +80,7 @@ class Command(BaseCommand):
             max_instances=1,
             replace_existing=True,
         )
-        logger.info(
-            "Added weekly job: 'delete_old_job_executions'."
-        )
+        logger.info("Added weekly job: 'delete_old_job_executions'.")
  
         try:
             logger.info("Starting scheduler...")
@@ -94,5 +88,5 @@ class Command(BaseCommand):
         except KeyboardInterrupt:
             logger.info("Stopping scheduler...")
             scheduler.shutdown()
-            logger.info("Scheduler shut down successfully!")
+            logger.info("Scheduler shut down successfully!")"""
 

@@ -1,17 +1,20 @@
-from django.conf import settings
-from django.core.mail import send_mail
 from django.db.models.signals import m2m_changed
 from django.dispatch import receiver
-from django.template.loader import render_to_string
 
-from .models import Category, Post
+from .models import Post
+from .tasks import message_subscribers_task
 
 @receiver(m2m_changed, sender=Post.categories.through)
 def message_subscribers(sender, instance, action, pk_set, **kwargs):
     if action != 'post_add':
         return
     
-    categories = Category.objects.filter(id__in=pk_set)
+    message_subscribers_task.delay(
+        post_pk=instance.pk,
+        category_pks=list(pk_set)
+    )
+    
+    """categories = Category.objects.filter(id__in=pk_set)
     
     for category in categories:
         subscribers = category.subscribers.all()
@@ -24,7 +27,7 @@ def message_subscribers(sender, instance, action, pk_set, **kwargs):
                     'user': user,
                 }
             )
-
+            
             send_mail(
                 subject=instance.title,
                 message=f'Здравствуй, {user.username}. Новая публикация в твоём любимом разделе!',
@@ -32,4 +35,4 @@ def message_subscribers(sender, instance, action, pk_set, **kwargs):
                 recipient_list=[user.email],
                 fail_silently=True,
                 html_message=html_content,
-            )
+            )"""
