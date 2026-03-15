@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.core.cache import cache
 from django.db import models
 from django.db.models import Sum
 from django.urls import reverse
@@ -51,7 +52,6 @@ class Post(models.Model):
     rating = models.IntegerField(default=0) #рейтинг статьи/новости
 
     def __str__(self):
-        
         return f"""{self.datetime_creation.strftime('%d.%m.%y %H:%M')} {self.get_type_display()}
 {self.categories_post()}
 {self.title}
@@ -63,6 +63,10 @@ class Post(models.Model):
 
     def get_absolute_url(self):
         return reverse('post_detail', args=[str(self.id)])
+ 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        cache.delete(f'post-{self.pk}')
 
     def preview(self):
         return self.text[:124] + '...'

@@ -1,11 +1,14 @@
 {% extends 'flatpages/default.html' %}
+{% load cache %}
  
 {% block title %}
 {{ flatpage.title }}
 {% endblock title %}
  
 {% block content %}
+{% cache 60 contact %}
     <h2>{{ flatpage.title }}</h2>
     <hr>
-<i>{{ flatpage.content }}</i>
+    <i>{{ flatpage.content }}</i>
+{% endcache %}
 {% endblock content %}
