@@ -1,11 +1,22 @@
+from django.core.validators import RegexValidator
 from django.db import models
 
+
 class User(models.Model):
+    phone_regex = RegexValidator(
+        regex=r'^\+7 \(\d{3}\) \d{3}-\d\d-\d\d$',
+        message='Телефон должен быть в формате: +7 (xxx) xxx-xx-xx'
+    )
+
     email = models.EmailField(unique=True)
     fam = models.CharField(max_length=100)
     name = models.CharField(max_length=100)
     otc = models.CharField(max_length=100)
-    phone = models.CharField(max_length=20, unique=True)
+    phone = models.CharField(
+        max_length=18,
+        validators=[phone_regex],
+        unique=True
+    )
 
 
 class Coords(models.Model):
@@ -33,7 +44,7 @@ class Pass(models.Model):
 
 
 class Image(models.Model):
-    data = models.CharField(max_length=255)
+    data = models.CharField(max_length=255) #принимает url изображения
     title = models.CharField(max_length=255)
     pass_obj = models.ForeignKey(Pass, on_delete=models.CASCADE, related_name="images")
     
