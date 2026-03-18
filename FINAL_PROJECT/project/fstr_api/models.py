@@ -1,4 +1,5 @@
-from django.core.validators import RegexValidator
+from django.core.validators import (MaxValueValidator, MinValueValidator,
+                                    RegexValidator)
 from django.db import models
 
 
@@ -20,8 +21,16 @@ class User(models.Model):
 
 
 class Coords(models.Model):
-    latitude = models.DecimalField(max_digits=6, decimal_places=4)
-    longitude = models.DecimalField(max_digits=7, decimal_places=4)
+    latitude = models.DecimalField(
+        max_digits=7,
+        decimal_places=4, 
+        validators=[MinValueValidator(-90), MaxValueValidator(90)],
+    )
+    longitude = models.DecimalField(
+        max_digits=8,
+        decimal_places=4,
+        validators=[MinValueValidator(-180), MaxValueValidator(180)],
+    )
     height = models.IntegerField()
 
 
