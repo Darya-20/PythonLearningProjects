@@ -1,0 +1,6 @@
+NEWS_PORTAL\project\.env
+FINAL_PROJECT\project\.env
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
