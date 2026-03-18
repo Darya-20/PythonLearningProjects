@@ -69,5 +69,3 @@ class Image(models.Model):
     title = models.CharField(max_length=255)
     pass_obj = models.ForeignKey(Pass, on_delete=models.CASCADE, related_name="images")
     
-
-
