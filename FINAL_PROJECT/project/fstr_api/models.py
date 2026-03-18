@@ -42,6 +42,13 @@ class Level(models.Model):
 
 
 class Pass(models.Model):
+    STATUS_CHOICES = [
+        ('new', 'Новая'),
+        ('pending', 'На проверке'),
+        ('accepted', 'Принята'),
+        ('rejected', 'Отклонена'),
+    ]
+
     beauty_title = models.CharField(max_length=255, blank=True, null=True)
     title = models.CharField(max_length=255)
     other_titles = models.CharField(max_length=500, blank=True, null=True)
@@ -50,6 +57,11 @@ class Pass(models.Model):
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name="passes")
     coords = models.OneToOneField(Coords, on_delete=models.CASCADE)
     level = models.OneToOneField(Level, on_delete=models.CASCADE)
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='new',
+    )
 
 
 class Image(models.Model):

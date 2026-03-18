@@ -71,7 +71,7 @@ class PassSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Pass
-        fields = ['id', 'beauty_title', 'title', 'other_titles', 'connect', 'add_time', 'user', 'coords', 'level', 'images']
+        fields = ['id', 'beauty_title', 'title', 'other_titles', 'connect', 'add_time', 'user', 'coords', 'level', 'images', 'status']
 
     def create(self, validated_data):
         user_data = validated_data.pop('user')
@@ -98,3 +98,29 @@ class PassSerializer(serializers.ModelSerializer):
             Image.objects.create(pass_obj=pass_obj, **image_data)
 
         return pass_obj
+    
+    def update(self, instance, validated_data):
+        coords_data = validated_data.pop('coords', None)
+        level_data = validated_data.pop('level', None)
+        images_data = validated_data.pop('images', None)
+
+        if coords_data:
+            for attr, value in coords_data.items():
+                setattr(instance.coords, attr, value)
+            instance.coords.save()
+
+        if level_data:
+            for attr, value in level_data.items():
+                setattr(instance.level, attr, value)
+            instance.level.save()
+
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+
+        if images_data is not None:
+            instance.images.all().delete()
+            for image_data in images_data:
+                Image.objects.create(pass_obj=instance, **image_data)
+
+        return instance
